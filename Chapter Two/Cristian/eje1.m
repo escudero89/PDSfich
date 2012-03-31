@@ -1,5 +1,4 @@
-function [vmedio, maximo, minimo, amp, energia, accion, pot_media, rms] = eje1(t, x, fm)
-    
+function [vmedio, maximo, minimo, amplitud, energia, accion, pot_media, rms] = eje1(x)    
     vmedio = sum(x) / length(x);
     maximo = max(x);
     minimo = min(x);
