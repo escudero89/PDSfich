@@ -5,7 +5,7 @@ function [vmedio, maximo, minimo, amplitud, energia, accion, pot_media, rms] = e
         
     % Norma inf, 2, 1 respectivamente
     amplitud = max(abs(x));
-    energia = sqrt(sum(x.^2));
+    energia = sum(x.^2);
     accion = sum(abs(x));
     
     pot_media = sum(abs(x).^2) / length(x);
