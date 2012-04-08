@@ -1,0 +1,24 @@
+EJERCICIO 1:
+
+1) g_senoidal.m
+2) m_sync.m
+3) m_cuadrada.m
+4) m_triangular.m
+5) m_dirac.m
+6) m_aleatorio.m
+
+
+EJERCICIO 2:
+
+1)operaciones.m
+2)operaciones.m
+3)operaciones.m
+4)operaciones.m
+5)m_cuantiza.m
+6)operaciones.m
+
+EJERCICIO 3:
+4)
+5)
+6)
+
