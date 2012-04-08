@@ -12,13 +12,13 @@ Y_sin = sin(2 *pi*t);
 factor = 2;
 
 # Expansion
-Y_sin_exp = Y_sin * factor;
+Y_sin_exp =  sin(2 * pi * t * factor);
 
 # Compresion
-Y_sin_cmp = Y_sin * 1/factor;
+Y_sin_cmp = sin(2 * pi * t * 1/factor);
 
 # Inversion
-Y_sin_inv = Y_sin * -1;
+Y_sin_inv = sin(2 * pi * t * -1);
 
 # Rectificacion
 Y_sin_rct = Y_sin;
