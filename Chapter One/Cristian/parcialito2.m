@@ -8,13 +8,20 @@ function [ret] = get_varianza(x, media)
     ret = sum((x - media).^2)/length(x);
 endfunction
 
-function [ret] = get_estacionaria(x, media, varianza, erg = false)
+function [ret] = get_estacionaria(x)
     
-    ret = true; # suponemos que si lo es    
-    desvio = sqrt(varianza)
-    
+    ret = true; # suponemos que si lo es        
+       
     for i = 1 : length(x(1,:))
-        if abs(get_media(x(:,i)) - media) > 2*desvio # 95.4% de que caiga dentro
+        media = get_media(x(:,i));
+        varianza = get_varianza(x(:,i), media);
+        desvio = sqrt(varianza);
+        
+        vec_sort = sort(abs(x(:,i) - media) > 2*desvio);
+        # deja un vector ordenado de ceros y unos (estos son los que son mayores)                        
+        run_vec_sort = runlength(vec_sort');
+           
+        if (run_vec_sort(1) / length(vec_sort)) > 95  # 95.4% de que caiga dentro
             ret = false;
             break;
         endif
@@ -22,8 +29,8 @@ function [ret] = get_estacionaria(x, media, varianza, erg = false)
 
 endfunction
 
-function [ret] = get_ergodicidad(x, media, desvio)    
-    [ret] = get_estacionaria(x', media, desvio, true);      
+function [ret] = get_ergodicidad(x)    
+    [ret] = get_estacionaria(x');      
 endfunction
 
 ini = 0;
@@ -33,18 +40,15 @@ T = 1/fm;
 
 t = ini : T : fin - T;
 
-x = [randn(1000, length(t)), rand(1000,length(t))];
-x = rand(1000,length(t));
+x = [randn(1000, 500) , rand(1000, 500)];
 
 disp "Analizando..."
 
-media = get_media(x(:,1));
-varianza = get_varianza(x(:,1), media);
-ret_est = get_estacionaria(x, media, varianza);
+ret_est = get_estacionaria(x);
 
 if (ret_est == true)
     disp "Es estacionaria."
-    ret_erg = get_ergodicidad(x, media, varianza);
+    ret_erg = get_ergodicidad(x);
     if (ret_erg == true)
         disp "Es ergodica."
     else
