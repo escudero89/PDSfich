@@ -1,10 +1,104 @@
 == 1.7 PREGUNTAS (página 37) ==
 
-1) ¿Cómo intervienen los criterios prácticos y los errores de medición y cómputo en la clasificación fenomenológica de señales reales?
+1) CAPITULO 1: PREGUNTAS
 
-RESPUESTA blabla
+1- ¿Cómo intervienen los criterios prácticos y los errores de medición y cómputo en la clasificación fenomenológica de las señales reales?
 
-2) ...
+Las señales se dividen en determinísticas y aleatorias desde el punto de vista fenomenológico. Para que una señal sea determinística, se deben poder predecir EXACTAMENTE sus valores de antemano. Sin embargo, cuando realizamos procesamiento digital, siempre está el factor de error de la medición, de redondeo o truncamiento, lo que ocasiona que, en la mayoría de los casos, los valores con los que trabajemos sean una aproximación de los reales. Así, nunca se cuenta con determinismo perfecto, si no que se cuenta con aproximaciones lo más fieles posibles. Es aquí que hay que poner una tolerancia en los errores y mediciones, para decidir sobre qué se considera determinista o no.
 
+2- Clasifique las siguientes señales según todos los criterios que conoce:
 
+Clasificación dimensional:
+Si la señal depende de M variables, entonces se dirá que se tiene una señal M-dimensional. por ejemplo, en una imagen en blanco y negro, en cada punto se tiene un valor de intensidad o brillo, I(x,y), constituyendo por tanto una señal bi-dimensional.
 
+Clasificación energético:
+Energía finita / energía infinita
+
+Clasificación espectral:
+Alta frecuencia / Baja frecuencia / Banda angosta / Banda ancha
+
+Clasificación fenomenológica:
+Determinística /  [Periódicas (Sinusoidales/Armónicas/Pseudoaleatorias) / Aperiódicas (Cuasi-periódicas / Transitorias)]
+Aleatorias / Estacionarias [Ergódicas/No ergódicas] o No estacionarias [Especiales]
+
+Clasificación morfológica:
+Continua/Discreta/Analógica/Digital
+
+a) La velocidad del viento en Mabuji-Maye (Zaire): 
+Unidimensional (si sólo medimos viento en un punto) |  Energía finita (suponiendo que medimos la señal durante un lapso de tiempo determinado) es de energía finita) | Baja frecuencia (no oscila mucho) | Aleatoria (Existe incerteza) / Estacionaria [No ergódica] (???) | Analógica.
+
+b) y(t) = sin(2*pi*100*t) con t,y perteneciendo a los reales.
+Unidimensional (sólo una variable independiente: tiempo) | Energía infinita (periódica, intervalo no definido) | Baja frecuencia (<3 MHz) | Determinística (la generamos nosotros) [Periódica (Sinusoidal)] | Analógica (porque la independiente es continua, y la dependiente se genera a partir de esta)
+
+c) La intesidad de luz del pixel (38,178) cuando se proyecta la película "El nombre de la Rosa".
+Unidimensional (es la intensidad en función del tiempo) | Energía finita (empieza y termina.) | Baja frecuencia (<3 MHz, 100 Hz para ser exactos) | Determinística (si ya la hemos visto y registrado antes) [Aperiódica (Transitoria)] --- Aleatoria (si es la primera vez que la registramos) [No estacionaria] | Analógica (tanto la intensidad como el tiempo es continuo)
+
+d) La corriente que circula por el cable del teclado de su computadora
+Unidimensional (la corriente dependende del tiempo) | Energía finita | Baja frecuencia (100 Hz para abajo) | Determinística (periódica y sinusoidal, si no hay ruido de ningún tipo) --- Aleatoria ( Estacionaria [Ergódica]) | Analógica.
+
+e) El delta de Dirac
+Unidimensional | Energía infinita (pega un impulso infinito en x=0) | Baja frecuencia (???) | Determinística [Aperiódica (Transitoria)] | Continuo.
+
+f) La variación anual de habitantes de origen asiático en Buenos Aires.
+Unidimensional (habitantes en función del tiempo) | Energía finita | (Depende de la frecuencia de muestreo) (???) | Aleatoria [No estacionaria] | Digital
+
+g) La altura de las aguas en la costa del río Genil (España)
+Unidimensional (altura en función de loquesea) | Energía finita | Baja frecuencia | Aleatoria [Estacionaria (puede llegar a ver una cierta estacionariedad en las mediciones, y puede que también sea ergódica)] | Digital
+
+h) El consumo de combustible por minuto que requiere un F1 durante el Gran Premio de Mónaco.
+Unidimensional (consumo en función tiempo) | Energía finita | Baja frecuencia | Aleatoria [Estacionaria, no ergódica] (depende del consumo del motor, y el motor depende de como anda el auto)] (???) | Discreta (el tiempo se mide por minutos)
+
+i) La suma de todas las emisiones con contenido futbolísitico en Radio Mitre.
+Unidimensional | Energía finita | Alta frecuencia (la frecuencia de la radio es alta) | Aleatoria (No estacionaria) | Analógica
+
+j) Las ganancias mensuales y la cantidad de fallas en los productos de Microsoft en los últimos 10 años.
+Unidimensional (tanto la ganancia mensual como la cantidad de fallos depende del momento que estamos viendo) | Energía finita | (???) | Determinística (tenemos los registros y podemos trazar una fórmula que dibuje la señal) [Aperiódica] | Digital
+
+3- Realice una lista de las señales que pueden medirse en el cuerpo humano y clasifíquelas según los criterios morfológico, fenomenológico y dimensional:
+Los siguientes son algunos ejemplos de señales que se pueden encontrar en el cuerpo humano.
+Presión arterial: Analógico | Aleatorio (Estacionario [ergódico, pero pueden existir patologías que cambien esta propiedad]) | Unidimensional.
+Ritmo de contracción de pulmones: Analógico | Aleatorio [ergódico] | Unidimensional
+Tono de la voz: Analógico | Aleatorio [ergódico] | Unidimensional
+Cantidad de glóbulos blancos: Digital | Aleatoria [ergódico] | Unidimensional
+Pulso de latidos del corazón: Digital | Aleatoria [ergódica] | Unidimensional
+
+4- ¿Por qué razón se necesitan muchas realizaciones de una señal aleatoria para poder comprobar experimentalmente su estacionariedad?
+Porque necesitamos trabajar con parámetros estadísticos tales como la media y el desvío que podrán ser estimados de mejor manera cuando más realizaciones hayamos realizado. 
+
+La estacionariedad, a medida que las muestras tienden a infinito, se transforma en una variable estadística con distribución normal. Del estudio de la Probabilidad y Estadística, sale el supuesto que para hacer evaluaciones más fieles a la situación real, se necesita una gran cantidad de muestras. Por lo tanto, si obtenemos una gran cantidad de muestras de una señal, podemos utilizarlas para ver si la señal es estacionaria o no (de lo contrario, si son pocas, podríamos tener un juicio equivocado, al sólo ver una parte muy pequeña del fenómeno).
+
+5- Describa el proceso de verificación de la ergodicidad de una señal aleatoria asumiendo que el promedio y la desviación estándar son medidas suficientes para su caracterización estadística.
+A partir de varias señales muestreadas, tendremos varios vectores que representen cada una de las muestras tomadas de ellas. Con todos ellos formamos una matriz, cuya columnas sean los distintos valores a lo largo del tiempo. Entonces, sacamos el promedio de cada columna y su desvío estándar. Luego procedemos a hacer lo mismo en cada fila.
+
+Si estos coinciden bajo cierta tolerancia calculada de forma estadística (por ejemplo, media +- 2 * desvío estándar), es porque estamos en presencia de una señal ergódica.
+
+6- Enuncie las hipótesis que se han hecho sobre la señal en el punto anterior y generalice la prueba de ergodicidad mediante el uso de medidas aptas para el caso más general.
+En el ejercicio anterior se hizo la suposición que tanto las muestras dentro de una medición, como las diferentes muestreos de los fenómenos, a medida que la cantidad de experimentos aumentan, la probabilidad de desvío de los valores reales forman una distribución normal estándar. En el caso más general, esto no es así y se requieren pruebas estadísticas más fuertes, como el test de hipótesis.
+
+7- ¿Qué beneficio práctico brinda poder asumir que una determinada señal es ergódica?
+Un proceso ergódico es más fácil de procesar, debido a que sólo necesitamos una muestra para poder trabajar. Por ejemplo, en la medicina, no es necesario hacer múltiples pruebas de un paciente para saber si su ritmo cardíaco es el correcto, ya que este es ergódico.
+El caso de señales ergódicas es el caso más cercano a las señales deterministas, y es lo mejor que podemos obtener para trabajar en señales aleatorias.
+
+8- ¿Por qué decimos que el random de una computadora es pseudo aleatoria? ¿Puede una computadora digital generar una señal realmente aleatoria?
+El random de una computadora genera secuencias de números aleatorios pero que se repiten cada un cierto período. Se consideran aleatorias porque este período es muy largo y en la práctica, es muy difícil que evidenciemos la repetición de la secuencia. Sin embargo, la secuencia puede ser conocida, lo que la convierte en una señal determinística y no aleatoria.
+Una computadora digital no puede generar una secuencia aleatoria ya que todo con lo que trabaja es determinista, y la única forma de generar algo aleatorio es a partir de un fenómeno aleatorio.
+
+Aún así, existen algunas máquinas que generar números aleatorios reales, a partir de transformar el ruido externo (como ruido ambiental, o electromagnético) en valores.
+
+9- Analice el proceso de discretización en tiempo de un período de la señal x(t) = cos(2*pi*10*t). Incremente el período de muestreo hasta no poder recostruir la señal contínua a partir de la señal de tiempo discreto.
+Para discretizar una señal continua en el tiempo se toma un intervalo de tiempo y se evalua la señal en puntos discretos del mismo. Dependiendo del tamaño del paso con el que evaluemos la señal obtendremos mayor o menor precisión en la discretizacion.
+
+En este ejercicio, dado que la frecuencia es 10 Hz, el período es 0.1 segundos. 
+Si muestreamos la señal en [0,1] con un paso de 0.001, la señal se reconstruye con muy buena precisión.
+Al descender una escala, a 0.01, empezamos a notar un error en la representación (ya que estamos muestrando sólo 10 veces en un período).
+Al acercarnos a 0.1 con el paso, la señal se empieza a perder totalmente.
+
+10- Si posee una señal con la forma x(t) = sin(2*pi*100*t) + r(t), donde r(t) es una señal aleatoria con distribución uniforme en [-0.1;0.1], ¿cómo procederia para calcular la relación señal ruido?
+
+SNR =  Potencia de la señal / Potencia del ruido
+SNR_10 = 10 log_10 (SNR) [db] 
+
+Potencia de la señal = límite T-infinito de { 1/2T * integral entre -T y T de |x(t)|^2 dt }
+Potencia del ruido =
+
+Debido a que el ruido sigue una distribución uniforme, cualquier valor que dé esta señal es igualmente probable.
