@@ -4,21 +4,17 @@ function [ret] = get_media(x)
     ret = sum(x)/length(x);
 endfunction
 
-function [ret] = get_desvio(x, media)
+function [ret] = get_varianza(x, media)
     ret = sum((x - media).^2)/length(x);
 endfunction
 
-function [ret, media, desvio] = get_estacionaria(x, media = 0, desvio = 0, erg = false)
+function [ret] = get_estacionaria(x, media, varianza, erg = false)
     
-    ret = true; # suponemos que si lo es
-    
-    if (erg == false)
-        media = get_media(x(:,1));
-        desvio = get_desvio(x(:,1), media);
-    endif
+    ret = true; # suponemos que si lo es    
+    desvio = sqrt(varianza)
     
     for i = 1 : length(x(1,:))
-        if abs(get_media(x(:,i))-media) > desvio
+        if abs(get_media(x(:,i)) - media) > 2*desvio # 95.4% de que caiga dentro
             ret = false;
             break;
         endif
@@ -27,7 +23,7 @@ function [ret, media, desvio] = get_estacionaria(x, media = 0, desvio = 0, erg =
 endfunction
 
 function [ret] = get_ergodicidad(x, media, desvio)    
-    [ret] = get_estacionaria(x');      
+    [ret] = get_estacionaria(x', media, desvio, true);      
 endfunction
 
 ini = 0;
@@ -37,14 +33,18 @@ T = 1/fm;
 
 t = ini : T : fin - T;
 
-x = randn(100, length(t));
+x = [randn(1000, length(t)), rand(1000,length(t))];
+x = rand(1000,length(t));
 
 disp "Analizando..."
-[ret, media, desvio] = get_estacionaria(x);
 
-if (ret == true)
+media = get_media(x(:,1));
+varianza = get_varianza(x(:,1), media);
+ret_est = get_estacionaria(x, media, varianza);
+
+if (ret_est == true)
     disp "Es estacionaria."
-    ret_erg = get_ergodicidad(x, media, desvio, true);
+    ret_erg = get_ergodicidad(x, media, varianza);
     if (ret_erg == true)
         disp "Es ergodica."
     else
