@@ -18,7 +18,4 @@ EJERCICIO 2:
 6)operaciones.m
 
 EJERCICIO 3:
-4)
-5)
-6)
-
+1) ej3.m
