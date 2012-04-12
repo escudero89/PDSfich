@@ -29,7 +29,7 @@ for f = 1 : 10
 endfor
 
 # Constante de proporcionalidad:
-alfa = norm(sins(1,:))^2 
+alfa = norm(sins(1,:))^2;
 
 bar(parecidos/alfa);
 
@@ -64,7 +64,17 @@ bar(parecidos_phi ./ alfa_phi);
 f_square = 5.5;
 s_square = sign(sin(2*pi*f_square*t));
 
-plot(s_square);
+full_square = zeros(1, length(t));
+
+# Genero las ondas cuadradas usando el alfa anterior
+
+for f = 1 : 10
+    squares(f, :) = sign(sin(2*pi*f*t));
+    
+    full_square += alpha(f) * squares(f, :);
+endfor
+
+# Ahora no se que medir :_
 
 
 
