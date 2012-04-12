@@ -16,22 +16,24 @@ alpha = [5 8 13 23 41 42 7 33 12 2];
 
 # Genero las ondas senoidales y la union de ellas
 
+frecuencias_base = [1 2 3 4 5 6 7 8 9 10];
+
 for f = 1 : 10
-    sins(f, :) = sin(2*pi*f*t);
+    sins(f, :) = sin(2*pi*frecuencias_base(f)*t);
     
-    full_sins += alpha(f) * sins(f, :);
+    full_sins +=  sins(f, :) * alpha(f);
 endfor
 
 # Mido grado de parecidos (producto punto) y lo muestro
 
 for f = 1 : 10
-    parecidos(f) = sum(sins(f,:) .* full_sins);
+    parecidos(f) = sum(sins(f,:) .* full_sins) / dot(sins(f, :), sins(f, :));
 endfor
 
 # Constante de proporcionalidad:
-alfa = norm(sins(1,:))^2;
+%alfa = norm(sins(1,:))^2;
 
-bar(parecidos/alfa);
+%bar(parecidos);
 
 # Inciso (b) -----------------------------------------------------------------#
 
@@ -64,19 +66,15 @@ bar(parecidos_phi ./ alfa_phi);
 f_square = 5.5;
 s_square = sign(sin(2*pi*f_square*t));
 
-full_square = zeros(1, length(t));
-
-# Genero las ondas cuadradas usando el alfa anterior
-
 for f = 1 : 10
-    squares(f, :) = sign(sin(2*pi*f*t));
-    
-    full_square += alpha(f) * squares(f, :);
+	parecidos_square(f) = sum(sins(f,:) .* s_square);
 endfor
 
-# Ahora no se que medir :_
+%bar(parecidos_square);
 
-
-
-
-
+% La onda cuadrada de frecuencia 5.5 es ortogonal a
+% los senos de frecuencias 1, 2, ..., 10. Creemos que
+% es asi porque una onda cuadrada esta formada por 
+% una suma de senos de frecuencias f, 3f, 5f, ... donde
+% f es la frecuencia de la onda cuadrada. En este caso,
+% ninguno de los senos es multiplo de 5.5.
