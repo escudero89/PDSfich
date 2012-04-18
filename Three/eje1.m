@@ -27,6 +27,10 @@ end
 
 %stem(abs(imag([s_f(n/2+1 : n) s_f(1 : n/2)])));
 
+% De aqui para abajo esta todo mal
+
 % Aparentemente, la fft devuelve un vector de numeros complejos
 % en los que la parte real es la fase y la parte imaginaria es
 % la magnitud (??)
+
+% Me parece que vos tenes menos idea que yo :/
