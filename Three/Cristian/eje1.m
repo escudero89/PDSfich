@@ -13,7 +13,8 @@ endfunction
 # Retorno un vector de phi para hacer el espectro de fase
 function [fase] = get_fase(senial_transf)
 
-    fase = atan(-1 .* imag(senial_transf) ./ real(senial_transf));
+    fase = arg(senial_transf);
+    #fase = atan(imag(senial_transf) ./ real(senial_transf));
 
 endfunction
 
@@ -54,12 +55,20 @@ s_t_uno = s_t .+ 4;
 
 s_k_uno = get_fourier(s_t_uno);
 
+# Le modificamos la frecuencia f2 y vemos los cambios dps
+
+f2_nueva = 11;
+
+s_t_f2 = sin(2 * pi * f1 * t) + 4 * sin(2 * pi * f2_nueva * t);
+
+s_k_f2 = get_fourier(s_t_f2);
+
 
 # Graficamos todo. Si queremos fase o magnitud modificar booleano
 
 magnitud = 0;
 
-clg; # borramos todo lo que hay ploteado y a la bosta
+clf; # borramos todo lo que hay ploteado y a la bosta
 
 hold on;
 
@@ -67,17 +76,19 @@ if magnitud == true
 
     disp "Espectros de Magnitud"
 
-    stem(t, abs(s_k_uno), 'g');
+    stem(abs(s_k_uno), 'g');
     
-    stem(t, abs(s_k), 'r');    
+    stem(abs(s_k), 'r');    
 
 else
 
     disp "Espectros de Fases"
 
-    stem(t, get_fase(s_k), 'r');
+    plot(get_fase(s_k), 'r');
 
-    stem(t, get_fase(s_k_uno), 'g');        
+    plot(get_fase(s_k_uno), 'g');        
+
+    plot(get_fase(s_k_f2), 'b');   
     
 endif
 
