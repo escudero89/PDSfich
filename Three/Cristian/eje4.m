@@ -12,6 +12,8 @@ fm = 100;
 Tm = 1/fm;
 
 n = ini : Tm : fin - Tm;
+n2 = ini : Tm : fin*2 - Tm;
+
 N = length(n);
 
 f_cuad = 4;
@@ -24,30 +26,31 @@ df = fm/(N*2);
 
 [fourier, frec] = get_fourier(cuadrada_doble, df, false);
 
-# Desfasamos multiplicando por e^-j2pik/N la trasnformada
-
-n2 = [ini : Tm : 2 - Tm];
-N2 = length(n2);
-
 desfase = 10;
-desfasada = fourier .* e.^(-j * 2 * pi * desfase * frec / N2);
 
-transf_desfasada = ifft(desfasada);
+desfasado = e.^(-j * ( 2 * pi * frec * desfase) / N);
 
-# Generamos la misma senial pero retardada 10 muestras
+desfasada = fourier .* desfasado;
 
-cuadrada_ret = [ sign(sin(2 * pi * f_cuad * n - desfase)), zeros(1, N)];
+cuadrada_desfasada = ifft(desfasada);
 
-# Obtengo la fourier desfasada
+cuadrada_retardo = [sign(sin(2 * pi * f_cuad * n - desfase)) zeros(1,N)];
 
-[fourier_ret, frec_ret] = get_fourier(abs(cuadrada_ret), df, false);
+[fourier_retardo, frec_retardo] = get_fourier(cuadrada_retardo, df, false);
 
 clf;
 
 hold on;
-#stem(frec, angle(fourier), 'r');
-#stem(frec_2, angle(fourier_2), 'c');
-#stem(n2, cuadrada_doble, 'k');
-stem(n2, real(transf_desfasada), 'r');
-stem(n2, cuadrada_ret, 'b');
+
+stem(frec_retardo, angle(fourier_retardo), 'b');
+stem(frec, angle(desfasada), 'r');
+
+#stem(n2, abs(cuadrada_doble), 'k');
+#stem(n2, abs(cuadrada_desfasada), 'r');
+#stem(n2, abs(cuadrada_retardo), 'c');
+
 hold off;
+
+# Bueno no se que onda, el ploteo de la onda en dominio temporal se nota que 
+# ambas estan desfasadas 10 muestras, pero enel dominio de la fase me da
+# cualquier cosa :D.
