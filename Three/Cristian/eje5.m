@@ -17,9 +17,6 @@ Tm = 1/fm;
 n = ini : Tm : fin - Tm;
 N = length(n);
 
-m = ini_ventana : Tm : fin_ventana - Tm;
-M = length(m);
-
 # Senial base
 A = 3;
 f_sen = 10;
@@ -36,10 +33,10 @@ for muestra = 1 : N
     w_R(muestra) = 1;
 
     # Ventana de Hanning
-    w_h(muestra) = 1/2 - 1/2 * cos(omega / M);
+    w_h(muestra) = 1/2 - 1/2 * cos(omega / N);
 
     # Ventana de Hamming
-    w_H(muestra) = 27/50 - 23/50 * cos(omega / M);
+    w_H(muestra) = 27/50 - 23/50 * cos(omega / N);
     
     # Ventana de Barlett
     
