@@ -59,12 +59,11 @@ endfor
 
 dF = fm / N;
 
-[w_R_fou, frec] = get_fourier(w_R, dF);
-[w_h_fou, frec] = get_fourier(w_h, dF);
-[w_H_fou, frec] = get_fourier(w_H, dF);
-[w_B_fou, frec] = get_fourier(w_B, dF);
-[w_K_fou, frec] = get_fourier(w_K, dF);
-
+[w_R_fou, frec] = get_fourier(senoidal .* w_R, dF);
+[w_h_fou, frec] = get_fourier(senoidal .* w_h, dF);
+[w_H_fou, frec] = get_fourier(senoidal .* w_H, dF);
+[w_B_fou, frec] = get_fourier(senoidal .* w_B, dF);
+[w_K_fou, frec] = get_fourier(senoidal .* w_K, dF);
 
 #########
 # GRAFICO 
