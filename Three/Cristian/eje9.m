@@ -18,7 +18,6 @@ fm = 1;
 Tm = 1/fm;
 t = 0 : Tm : length(fid) - Tm;
 
-
 N = length(t);
 
 t2 = 0 : Tm : N*2 - Tm;
