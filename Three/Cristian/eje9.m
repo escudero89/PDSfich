@@ -28,6 +28,10 @@ fourier = fft(fid);
 
 new_fourier = zeros(1, 2*N);
 
+fer_fourier = [ fourier(1:floor(N/2)), zeros(1, N), fourier(floor(N/2)+1:N)];
+
+fer_fid = ifft(fer_fourier);
+
 for fou = 1 : N
     new_fourier(fou * 2 - 1) = fourier(fou);        
 endfor
@@ -36,14 +40,15 @@ t_fid = ifft(new_fourier);
 
 # Graficamos
 
-plotear = false;
+plotear = true;
 
 clf;
 hold on;
 if (plotear == true)
     plot(t, fid, 'k');
-    plot(t2, abs(t_fid), 'r');
+    plot(t2, abs(t_fid) * 2, 'r');
     plot(t2, [fid2 0], 'g');
+    plot(t2, abs(fer_fid) * 2, 'b');        
 else    
     stem(abs(new_fourier), 'g');
     stem(abs(fourier), 'k');
