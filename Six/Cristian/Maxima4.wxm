@@ -1,0 +1,79 @@
+/* [wxMaxima batch file version 1] [ DO NOT EDIT BY HAND! ]*/
+/* [ Created with wxMaxima version 11.08.0 ] */
+
+/* [wxMaxima: comment start ]
+Modelo de impedancias a partir de aplicar Laplace a la Ecuación Diferencial
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+z345 : z3 + z4 + z5;
+z2345 : z2 * z345 / (z2 + z345);
+z12345 : z1 + z2345;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+I : Ei / z12345;
+V : I * z2345;
+i : V / z345;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+Eo : z5 * i;
+ratsimp(Eo : z5 * I);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Reemplazo impedancias por valores en S:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+z1 : R1;
+z2 : (s*C2)^-1;
+z3 : R3;
+z4 : (s*C4)^-1;
+z5 : R5;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Reemplazo para obtener una transformación de Euler (guardo los anteriores valores de z):
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+z1_o : z1;
+z2_o : z2;
+z3_o : z3;
+z4_o : z4;
+z5_o : z5;
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: input   start ] */
+s : (1 - z^-1) / T;
+H_z : ratsimp(Eo / Ei);
+/* [wxMaxima: input   end   ] */
+
+/* [wxMaxima: comment start ]
+Voy a hacer ecuaciones en diferencias:
+   [wxMaxima: comment end   ] */
+
+/* [wxMaxima: input   start ] */
+Ztrans : expand(H_z * X_z / Y_z)$
+/* [wxMaxima: input   end   ] */
+
+
+/* [wxMaxima: input   start ] */
+ratsubst(X[n], X_z * z^2, Ztrans)$
+ratsubst(X[n-1], X_z * z, %)$
+ratsubst(X[n-2], X_z, %)$
+
+ratsubst(Y[n], Y_z * z^2, %)$
+ratsubst(Y[n-1], Y_z * z, %)$
+EcuDif : ratsubst(Y[n-2], Y_z, %)$
+
+up : expand(num(EcuDif));
+down : expand(num(EcuDif^-1));
+
+solve(up = down, Y[n]);
+/* [wxMaxima: input   end   ] */
+
+/* Maxima can't load/batch files which end with a comment! */
+"Created with wxMaxima"$
