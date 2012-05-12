@@ -29,16 +29,21 @@ y_n = conv(x_n, fid);
 
 # Deconvolucionamos
 
-fourier = ifft(abs(1./fft(fid)));
+fourier = fft(fid);
+y_n_fou = fft(y_n);
 
-x_n_d = conv(y_n, abs(fourier));
+fourier = abs(fourier);
+N_f = round(length(fourier) / 2);
+fourier = [ fourier(1 : N_f - 1)  zeros(1, abs(length(fourier) - length(y_n_fou))) fourier(N_f : length(fourier)) ];
+
+x_n_d = abs(ifft(abs(y_n_fou) ./ fourier));
 
 clf;
 
 hold on;
 
 stem(x_n, 'k');
-stem(x_n_d, 'r');
 stem(y_n, 'g');
+plot(x_n_d, 'r');
 
 hold off;
