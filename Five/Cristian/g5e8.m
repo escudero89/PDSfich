@@ -13,7 +13,7 @@ fid = fid';
 f = [ 50 75 100 125 150 ];
 
 ini = 0;
-fin = 1;
+fin = 0.1;
 fm = 1000;
 T = 1/fm;
 
@@ -29,14 +29,7 @@ y_n = conv(x_n, fid);
 
 # Deconvolucionamos
 
-fourier = fft(fid);
-y_n_fou = fft(y_n);
-
-fourier = abs(fourier);
-N_f = round(length(fourier) / 2);
-fourier = [ fourier(1 : N_f - 1)  zeros(1, abs(length(fourier) - length(y_n_fou))) fourier(N_f : length(fourier)) ];
-
-x_n_d = abs(ifft(abs(y_n_fou) ./ fourier));
+x_n_d = deconv(y_n, fid);
 
 clf;
 
