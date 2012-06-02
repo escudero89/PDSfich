@@ -11,7 +11,7 @@ function [alpha] = get_angle( dE, d, degree = true )
     h = x/2 * sin(Beta);    
     f = d/2 - x/2 * cos(Beta);
     
-    alpha = pi/2 - atan(h / f);
+    alpha = - pi/2 + atan(h / f);
     
     if ( degree )
         alpha = alpha * 180 / pi;
