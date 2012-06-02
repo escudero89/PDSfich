@@ -1,11 +1,21 @@
 #! /usr/bin/octave -qf
 
-function [dt] = delta_tiempo( h1, h2, s, fm = 0 )
+# Le podes pasar h1, h2, s y fm como seniales aparte, o llamarla con nombres
+# de archivos y lo hace automaticamente:
+# delta_tiempo ("archivo.mat", "sonido.wav")
 
-    h1 = check_signal(h1);
-    h2 = check_signal(h2);
-    s = check_signal(s);
+function [dt] = delta_tiempo( h1, h2 = [], s = [], fm = 0 )
+
+    [ h, check ] = check_signal(h1);
     
+    if (check)
+        h1 = h.data(:, 1)';
+        h2 = h.data(:, 2)';
+        fm = h.Fs;
+        
+        s = check_signal(h2);
+    endif
+        
     s1 = conv(h1, s);
     s2 = conv(h2, s);
     
@@ -17,9 +27,11 @@ function [dt] = delta_tiempo( h1, h2, s, fm = 0 )
     
     dt = lag(idx);
     
-    # Si le pasamos fm, devolvemos el dT en segundos (sino en muestras)
+    # Si tenemos fm, devolvemos el dT en espacio recorrido (sino en muestras)
+    sound_speed = 343;
+    
     if (fm)
-        dt *= 1/fm;
+        dt *= 1/fm * sound_speed;
     endif
     
     return;
@@ -29,12 +41,20 @@ endfunction
 
 # Chequea si le paso una senial como un string (para cargarlo desde un archivo)
 
-function [ret] = check_signal( s )
+function [ ret, check ] = check_signal( s )
 
-    if (ischar(s))    
-        ret = load(s);    
+    if (ischar(s))
+    
+        if (findstr(s, "mat")) # es .mat o .wav?
+            ret = load(s);
+        else
+            ret = wavread(s);
+        endif
+        
+        check = true;          
     else 
-        ret = s;         
+        ret = s;
+        check = false;   
     endif
     
     return;
