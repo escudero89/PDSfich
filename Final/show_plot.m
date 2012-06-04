@@ -11,8 +11,8 @@ function [dt] = show_plot( mat, sound, d1, d2, room )
 
     d = abs(dx2 - dx1) + abs(dy2 - dy1) + abs(dz2 - dz1);
 
-    [dE] = delta_tiempo(mat, sound);
-    [alpha] = get_angle(dE, d);
+    [dE] = delta_tiempo(mat, sound)
+    [alpha] = get_angle(dE, d)
     
     x = dmic(1) : 0.001 : width;
     y = tan(pi/2 + alpha) * (x - dmic(1)) + dmic(2);

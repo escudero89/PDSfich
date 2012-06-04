@@ -5,18 +5,12 @@
 
 function [alpha] = get_angle( dE, d, degree = true )
 
-    Beta = asin(dE / d);
-
-    x = d * cos(Beta);
-    h = x/2 * sin(Beta);    
-    f = d/2 - x/2 * cos(Beta);
-    
-    alpha = atan(h / f) - pi/2;
-    
-    if ( degree )
+    alpha = asin(dE / d) * -1; 
+	
+	if ( degree )
         alpha = alpha * 180 / pi;
     endif
-    
+	
     return;
     
 endfunction

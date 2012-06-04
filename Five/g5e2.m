@@ -15,3 +15,5 @@ H(k) = (D(k) - 2*D(k-1) + D(k-2) + 4*H(k-1) - 5*H(k-2))/6;
 endfor
 
 Y2 = convolucion(X, H);
+
+stem(H);
