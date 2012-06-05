@@ -102,13 +102,19 @@ endfunction
 # Funcion base, le paso una senal, de voz retorna las estimaciones de pitch y muestra grafica
 # La uso para llamarla varias veces con senales contaminadas con ruido
 
-function [pitch_a, pitch_c] = analizar_pitchs(voice, fm, plotear = true)
+function [pitch_a, pitch_c, booleano] = analizar_pitchs(voice, fm, booleano = [], plotear = false)
 
     Tm = 1/fm;
 
     N = length(voice);
 
     tiempo = 0 : Tm : N * Tm - Tm;
+
+    if (length(booleano) == 0)
+        no_tengo_booleano = true;
+    else 
+        no_tengo_booleano = false;
+    endif
 
     # Ventana de Hamming
     a0 = 0.53836;
@@ -134,18 +140,24 @@ function [pitch_a, pitch_c] = analizar_pitchs(voice, fm, plotear = true)
         
         corta(M) = count_cortes(muestras(M,:));
         
-        # Booleano que separa las sordas de las sonoras (1: sonoro, 0: sordo)
+        # Si tengo el booleano, ni me caliento
+
+        if (no_tengo_booleano)
+
+            # Booleano que separa las sordas de las sonoras (1: sonoro, 0: sordo)
+            
+            max_frec_admitida = 90;
+            min_ener_admitida = 0.1;        
+            
+            if ( corta(M) > max_frec_admitida || max(xcorr(muestras(M, :))) < min_ener_admitida)        
+                booleano(M) = 0;            
+            else 
+                booleano(M) = 1;       
+            endif  
         
-        max_frec_admitida = 90;
-        min_ener_admitida = 0.1;
+        endif
         
-        if ( corta(M) > max_frec_admitida || max(xcorr(muestras(M, :))) < min_ener_admitida)        
-            booleano(M) = 0;            
-        else 
-            booleano(M) = 1;       
-        endif  
-        
-        # Hago las estimaciones si es sonora
+        # Hago las estimaciones si es sonora        
         
         if (booleano(M))
         
@@ -210,7 +222,7 @@ voice = load("sent.txt")';
 
 fm = 8000;
 
-analizar_pitchs(voice, fm, false);
+[ pitch_a(1, :), pitch_c(1, :), booleano ] =analizar_pitchs(voice, fm);
 
 # Analicemos los casos con ruido
 
@@ -218,4 +230,25 @@ voice_0db = add_noise(voice, fm, 0);
 voice_20db = add_noise(voice, fm, 20);
 voice_50db = add_noise(voice, fm, 50);
 
-analizar_pitchs(voice_0db, fm);
+[pitch_a(2, :), pitch_c(2, :)] = analizar_pitchs(voice_50db, fm, booleano);
+[pitch_a(3, :), pitch_c(3, :)] = analizar_pitchs(voice_20db, fm, booleano);
+[pitch_a(4, :), pitch_c(4, :)] = analizar_pitchs(voice_0db, fm, booleano);
+
+x = 1 : length(pitch_a);
+N = length(x);
+
+clf;
+hold on;
+stem(x, pitch_a(1,:), 'k');
+stem(x + N, pitch_a(2,:), 'b');
+stem(x + N*2, pitch_a(3,:), 'b');
+stem(x + N*3, pitch_a(4,:), 'r');
+
+plot(x, pitch_c(1,:), 'r');
+plot(x + N, pitch_c(2,:), 'm');
+plot(x + N*2, pitch_c(3,:), 'm');
+plot(x + N*3, pitch_c(4,:), 'g');
+hold off;
+
+xlabel('x'); ylabel('y'); zlabel('z');
+
