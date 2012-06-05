@@ -1,7 +1,24 @@
 #! /usr/bin/octave -qf
 1;
 clear all;
-clf;
+
+function [s_k] = get_polos(N)
+    
+    d = 1e-6;
+    techo = ceil(N/2);
+
+    # for con N/2 pares, (N+1)/2 impares
+    for k = 1 : techo
+        alpha = (2*k - 1)/(2*N)*pi;
+        s_k(k) = -sin(alpha) + j * cos(alpha);
+        
+        if (imag(s_k(k)) > d)
+            s_k(k + techo) = -sin(alpha) - j * cos(alpha);
+        endif
+        
+    endfor
+    
+endfunction
 
 # Creacion de filtro pasa-alto de Butterworth
 
@@ -14,27 +31,21 @@ Tm = 1 / fm;
 
 t = 0 : Tm : 1 - Tm;
 
-N = 6; # orden
+N = 3; # orden
 
-k = [ 1 : N ];
+##############3
 
-# Formula para determinar polos de Butterworth:
-s_k = w_c^(-1/N) * e.^(j * (2 * k + N - 1) * pi / (2 * N));
+H_z = [];
+polos = get_polos(N);
 
-# Pero me tengo que quedar con los del lado izquierdo
-s_left = [];
-for m = 1 : N
-    if !(real(s_k(m)) > 0)
-        s_left = [s_left s_k(m)];
-    endif
+circulo = e.^(j*2*pi*t);
+
+for i = 1 : length(circulo)
+    
+    z = circulo(i);    
+   
+    s = 2/Tm * ((1 - z^-1)/(1 + z^-1));
+   
+    H_z(i) = 1 / prod(s - polos);    
+        
 endfor
-
-z_c = e.^(j*t*pi);
-
-s = (1 - z_c) ./ (1 + z_c);
-
-for m = 1 : length(s)
-    H_z(m) = 1 ./ prod(s(m) - s_left);
-endfor
-
-plot(abs(H_z));
