@@ -34,7 +34,7 @@ function [pitch] = get_pitch_hertz(old_pitch, fm)
     pitch = 1 / (old_pitch * 1 / fm);
     
     # Si el pitch esta fuera del rango humano (50 ~ 400 Hz), devolvemos cero
-    minfrec = 100;
+    minfrec = 50;
     maxfrec = 400;
     
     if ( pitch > maxfrec || pitch < minfrec )
@@ -121,7 +121,7 @@ function [pitch_a, pitch_c, booleano] = analizar_pitchs(voice, fm, booleano = []
     a1 = 0.46164;
 
     # Tamano de ventana en muestras (Tm * msec)
-    msec = 40e-3;
+    msec = 30e-3;
     h_size = fm * msec;
 
     n = 0 : h_size - 1;
@@ -238,17 +238,27 @@ x = 1 : length(pitch_a);
 N = length(x);
 
 clf;
-hold on;
-stem(x, pitch_a(1,:), 'k');
-stem(x + N, pitch_a(2,:), 'b');
-stem(x + N*2, pitch_a(3,:), 'b');
-stem(x + N*3, pitch_a(4,:), 'r');
 
-plot(x, pitch_c(1,:), 'r');
-plot(x + N, pitch_c(2,:), 'm');
-plot(x + N*2, pitch_c(3,:), 'm');
-plot(x + N*3, pitch_c(4,:), 'g');
+subplot(211);
+hold on;
+stem(x + N*0, pitch_a(1,:), 'r');
+stem(x + N*1, pitch_a(2,:), 'r');
+stem(x + N*2, pitch_a(3,:), 'r');
+stem(x + N*3, pitch_a(4,:), 'r');
+legend("Autocorrelacion");
+ylabel('f [Hz]'); grid();
+ylim([50, 400]);
 hold off;
 
-xlabel('x'); ylabel('y'); zlabel('z');
+title("Comparacion de estimaciones de pitch de una senal.");
 
+subplot(2, 1, 2);
+hold on;
+stem(x + N*0, pitch_c(1,:), 'b');
+stem(x + N*1, pitch_c(2,:), 'b');
+stem(x + N*2, pitch_c(3,:), 'b');
+stem(x + N*3, pitch_c(4,:), 'b');
+legend("Coeficientes Espectrales");
+ylabel('f [Hz]'); grid();
+ylim([50, 400]);
+hold off;

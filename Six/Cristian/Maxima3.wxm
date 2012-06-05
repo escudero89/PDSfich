@@ -3,12 +3,17 @@
 
 /* [wxMaxima: input   start ] */
 H_z : (1 - 2*z^-1 + 2 * z^-2 - z^-3)/((1-z^-1) * (1 - 0.5*z^-1) * (1 - 0.2*z^-1))$
-ratsimp(H_z);
+Ztrans : H_z * (X_z / Y_z);
 /* [wxMaxima: input   end   ] */
 
 /* [wxMaxima: input   start ] */
-sub
-ratsimp(num(H_z) = num(H_z^-1));
+ratsubst(X[n], X_z * z^2, Ztrans)$
+ratsubst(X[n-1], X_z * z, %)$
+ratsubst(X[n-2], X_z, %)$
+
+ratsubst(Y[n], Y_z * z^2, %)$
+ratsubst(Y[n-1], Y_z * z, %)$
+EcuDif : ratsubst(Y[n-2], Y_z, %);
 /* [wxMaxima: input   end   ] */
 
 /* Maxima can't load/batch files which end with a comment! */

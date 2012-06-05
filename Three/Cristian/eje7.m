@@ -27,12 +27,12 @@ endfunction
 # Una matriz con T (ms), fm, f1, f2
 
 matriz_datos = [
-    249, 512, 112, 200 ; # La fm lo descarta
+    249, 512, 112, 200 ; # Este da si ses divide por el factor de prop 4
     498, 128, 56,  200 ; # Me fallan las frecuencias y el N
     993, 128, 100,  50 ; # Este puede ser :D
     498, 256, 56,  868 ; # Descartado :/. No me convence
-    993, 125, 100,  78 ; # Aprobado, aunque con aliasing
-  124.5,1024,3872,5520]; # Se va al carajo los valores (!)
+    993, 128, 100,  78 ; # Aprobado, aunque con aliasing
+  124.5,1024,3872,5520]; # Este da si se divide por el factor de prop 8
 
 # Cantidad de filas
 N = size(matriz_datos)(1);
