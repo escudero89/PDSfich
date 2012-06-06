@@ -1,0 +1,115 @@
+﻿Procesamiento de Voz (en construcción :P)
+
+INTRODUCCIÓN
+
+
+Las señales voz pueden ser clasificadas en tres diferentes regiones: sonoras, sordas y de silencio.
+
+Cuando se habla, el pecho se expande y se contrae, forzando al aire de los pulmones a salir a través de la tráquea. Cuando este pasa por las cuerdas vocales, si las mismas estaban tensadas (para producir vocales, por ejemplo), se produce entonces una modulación de la voz en forma de un tren de impulsos cuasi-periódico, y el resultado es un sonido sonoro. En el caso de que las cuerdas vocales estuvieran distendidas, se producen sonidos sordos.
+
+La vibración de las cuerdas vocales produce ondas sonoras con un espectro de frecuencia bastante distribuido, estas son filtradas por el tracto vocal y algunas frecuencias son reforzadas y otras atenuadas, dependiendo de la configuración de los articuladores. Las frecuencias fuertemente reforzadas son precisamente los “formantes” principales de la emisión sonora.
+
+El formante con la frecuencia más baja se designa F1, el segundo F2, el tercero F3, etc. Aunque sólo son necesarios los tres primeros formantes para caracterizar el sonido que se escucha, el resto de los formantes de más alto orden son necesarios para producir un sonido de buena calidad. En una persona, los formantes de alto orden determinan propiedades acústicas, como lo es el timbre.
+
+Las regiones sonoras se comportan como señales cuasi-periódicas en el dominio temporal. Si tomamos segmentos de una señal de voz, podemos tratar a estas como periódicas en términos prácticos para su análisis y procesamiento. La periodicidad asociada a cada segmento está definido como el “pitch de período T0” en el dominio temporal, y “frecuencia fundamental F0” en el dominio de la frecuencia.
+
+Específicamente, el término pitch hace referencia a la unidad percibida de la frecuencia fundamental. Contiene información importante sobre el hablante, y también es importante para la tarea de analizar una señal. Es por eso que la estimación del pitch es una de las tareas más importantes en el procesamiento de la voz.
+
+Hay una gran cantidad de métodos diseñados para estimar el pitch dentro del área del procesamiento de voz. Entre los métodos más usados tenemos la auto-correlación de la voz, y la determinación del pitch mediante el análisis de los coeficientes cepstrales.
+
+Analizaremos a continuación un archivo de audio de una mujer diciendo la frase: “¿Cómo se llama el mar que baña a Valencia?”, y procederemos a estimar su pitch a lo largo del tiempo. Además, contaminaremos la señal con ruido para observar el comportamiento de los estimadores y la precisión de los mismos.
+
+DESARROLLO
+
+
+Partimos de la información almacenada en el archivo de audio “sent.wav”. Primero veremos que parte de la señal corresponde al habla o no, y en profundidad, clasificar partes de la señal en las tres regiones antes mencionadas: sonora, sorda y de silencio (o ruido de fondo).
+
+Las propiedades de las señales de voz varían lentamente con el tiempo. Para salvar este problema, trabajaremos no en todo el dominio temporal, sino utilizando un método de procesamiento en “tiempo corto” de la señal, que divide la señal en pequeñas ventanas independientes para su análisis como si fueran señales estacionarias.
+
+Para realizar esto, tomamos ventanas de Hamming de 30 milisegundos de duración, y la aplicamos secuencialmente a la señal de voz. La elección de este tiempo para la ventana yace en el hecho de que la respuesta al impulso del tracto vocal es una secuencia que no es despreciable dentro de los 20 a 30 milisegundos.
+
+Una vez dividida la señal en pequeños fragmentos, los analizamos para ver cuales de ellos corresponden a cada una de las tres clasificaciones de regiones posibles. Esto lo haremos calculando cuántas veces la señal corta al eje del tiempo (altas frecuencias producen muchos cortes) y en qué frecuencias está acumulada su mayor energía. Las regiones que contengan frecuencias muy altas, es porque son regiones sordas o de silencio, debido a que para que una señal pertenezca a una región sonora, ha de ser producida por el tracto vocal de la persona, e influida fuertemente por la formante F0, por lo que su frecuencia con más energía debería ser aquella dentro del rango humano de pitch: de 50 a 400 Hz.
+
+Tenemos ahora la señal clasificadas en regiones sonoras y hemos puesto las sordas y de silencio juntas, porque para motivos de estimación de pitch, sólo analizaremos la primera, por lo que no desarrollaremos un algoritmo de separación de las últimas dos.
+
+Dos métodos hemos de aplicar para la estimación: el de autocorrelación temporal y el de coeficientes cepstrales. Analizaremos la implementación de cada uno de ellos y luego mostraremos los resultados de aplicar cada uno frente a la señal contaminada por diversos niveles de ruido.
+
+El método de estimación por autocorrelación temporal funciona a partir del análisis de su espectro de energías en el dominio temporal.
+
+[[Gráfica de una ventana con energía]]
+
+Por ser el espectro simétrico, tomamos sólo el lado derecho para trabajar con él. Medimos ahora la distancia en muestras desde el segundo pico más alto de energía, ya que el primero corresponde a la muestra cero, y al valor obtenido lo multiplicamos por el período de muestreo para obtener la estimación del período fundamental en segundos, lo invertimos para obtener su valor de pitch en Hertz.
+
+En Octave^GNU, lo anterior fue implementado sobre una señal S de la siguiente manera:
+
+[código]
+
+# xcorr es la función de autocorrelación
+[ autocorr, lag ] = xcorr(S);
+
+# Traducimos el lag en frecuencia
+lag_frec = 1 ./ (lag * 1/fm);
+
+# Contamos la cantidad de muestras que ignoraremos en el próximo paso (las menores a 50Hz)
+m_ceros = runlength(lag_frec >= 50)(1);
+
+# Analizo el máximo dentro del rango humano
+humano = autocorr .* (lag_frec >= 50 & lag_frec <= 400);
+
+# Sacamos el pico y su posición indicial
+[maxvalue, idx] = max(humano);
+
+# Tomamos el valor muestral obtenido y lo pasamos a Hz usando la frecuencia de muestreo fm
+pitch_m = (idx - m_ceros);
+pitch = 1 / (pitch_m * 1 / fm);
+
+[fin-código]
+
+Obtenemos así la estimación del pitch mediante autocorrelación temporal.
+
+Cómo el rango humano va de 50 a 400Hz, el “segundo” pico más alto debe estar en ese rango. Cabe notar que la principal diferencia entre regiones sordas y sonoras es la existencia de este pico prominente.
+
+
+La limitación que sufre la autocorrelación temporal es que la estimación del pitch puede ser errónea si tomamos un pico que no corresponda al período fundamental T0. Esto puede ocurrir debido a la mezcla entre la respuesta al impulso del tracto vocal y la excitación.
+
+La estimación por coeficientes cepstrales trata de minimizar este problema, al separar estas dos señales. Esto se logra gracias al procesamiento homomórfico, que nos lleva al cepstrum de la señal.
+
+[[ Gráfico página 689, 12.32 ]]
+
+El cepstrum de la voz está definido como la inversa de la transformada de Fourier del logaritmo de la magnitud del espectro de frecuencias. El logaritmo es particularmente efectivo ya que la excitación vocal (que nos da el pitch) y la respuesta al impulso del tracto vocal (que nos da las formantes) son aditivas en el logaritmo de la magnitud del espectro de frecuencias, y por ende, separables.
+
+La variable independiente en un gráfico del cespstrum es llamada cuefrencia, y que a pesar de ser una medida del tiempo, su relación con el dominio temporal original de la señal es distinto.
+
+Por ejemplo, si tenemos una frecuencia de muestreo fm de 8000Hz, la primera muestra corresponde a la componente de fm/1=8000Hz, el segundo a fm/2, el tercero a fm/3, y así sucesivamente.
+
+De esta forma, las señales con más alta frecuencia (como las formantes) son movidas al principio del gráfico, y las de más baja frecuencia (el pitch), al final. De esta forma quedan claramente separadas la respuesta al impulso del tracto vocal de la excitación.
+
+El algoritmo que implementamos en Octave^GNU para realizar la estimación por pitch de una señal S es el siguiente:
+
+[código]
+
+# Aplicamos el procesamiento homomórfico
+y = fft(S);
+c = ifft(log(abs(y)));
+N = length(c);
+
+# Al ser simétrica, tomamos la primera mitad
+N_2 = floor(N/2);
+c_sim = c(1 : N_2);
+
+# fm / muestras. Voy desde 400 Hz en adelante a menores frecuencias
+mfrec_u = 400;
+start_here = fm / mfrec_u;
+
+c_considerar = c_sim(start_here : length(c_sim));
+# Ahora tomo el valor del pico mas alto dentro del rango humano (<400 Hz)
+[maxvalue, idx] = max(c_considerar);
+
+# Obtengo el valor del pitch
+old_pitch = idx + start_here;
+pitch = 1 / (old_pitch * 1 / fm);
+
+[fin-código]
+
+
+…....................................

@@ -47,7 +47,7 @@ for i = 1 : length(circulo)
    
     s = 2/Tm * ((1 - z^-1)/(1 + z^-1));   
    
-    ganancia = (wc * s)^length(polos) / prod(-polos .* wc);
+    ganancia = (w_c * s)^length(polos) / prod(-polos .* w_c);
    
     H_z(i) = ganancia / prod(s - w_c./(polos));    
         

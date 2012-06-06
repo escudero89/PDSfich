@@ -27,24 +27,6 @@ function [corta] = count_cortes(S)
 
 endfunction
 
-# Le paso el pitch en muestras, y la fm, y me retorna su valor en hertz
-# Suponiendo que las muestras estaban en el dominio temporal
-function [pitch] = get_pitch_hertz(old_pitch, fm)
-
-    pitch = 1 / (old_pitch * 1 / fm);
-    
-    # Si el pitch esta fuera del rango humano (50 ~ 400 Hz), devolvemos cero
-    minfrec = 50;
-    maxfrec = 400;
-    
-    if ( pitch > maxfrec || pitch < minfrec )
-        pitch = 0;
-    endif
-
-    return;
-
-endfunction
-
 # Le pasas una senal y su frec de muestre, y devuelve el segundo pico mas alto (pitch)
 # y la autocorrelacion
 
@@ -52,18 +34,22 @@ function [ pitch ] = pitch_autocorr(S, fm)
 
     [ autocorr, lag ] = xcorr(S);
     
-    # Cuento la cantidad de muestras que quedan en cero
+    # Traducimos el lag en valores de frecuencia
+    
+    lag_frec = 1 ./ (lag * 1/fm);
+    
+    # Cuento la cantidad de muestras que voy a ignorar
 
-    m_ceros = runlength(lag >= 0)(1);
+    m_ceros = runlength(lag_frec >= 50)(1);
     
-    # Nos quedamos con el lado derecho, y sin el pico de energia en el medio
-    right_acorr = autocorr .* (lag > 1);
+    # Analizo el maximo dentro del rango humano        
     
-    [maxvalue, idx] = max(right_acorr);
+    humano = autocorr .* (lag_frec >= 50 & lag_frec <= 400);
     
-    pitch = get_pitch_hertz((idx - m_ceros), fm);       
+    [maxvalue, idx] = max(humano);
     
-    return;
+    old_pitch = idx - m_ceros;    
+    pitch = 1 / (old_pitch * 1 / fm);
 
 endfunction
 
@@ -82,18 +68,18 @@ function [ pitch ] = pitch_cepstrum(S, fm)
     
     c_sim = c(1 : N_2);
     
-    # Mido el pico luego de los 2 primeros msec (500Hz en adelante)
-    # n * Tm = msec -> n = msec / Tm = msec * fm
+    # fm / muestras => Voy desde 400 Hz en adelante
     
-    msec = 2e-3;
-    start_here = msec * fm;
-    
+    mfrec_u = 400;    
+    start_here = fm / mfrec_u;
+
     c_considerar = c_sim(start_here : length(c_sim));
     
     # Ahora tomo el valor del pico mas alto (el segundo pico en realidad)
     [maxvalue, idx] = max(c_considerar);
     
-    pitch = get_pitch_hertz((idx + start_here), fm);
+    old_pitch = idx + start_here;    
+    pitch = 1 / (old_pitch * 1 / fm);
     
     return;
 
