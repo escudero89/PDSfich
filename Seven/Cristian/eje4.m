@@ -31,17 +31,7 @@ function [ret] = FIR(orden, ventana)
     tomar_central = antitransformada(rango_central);    
     tomar_central = [ zeros(1, medio - delta_orden - 1) tomar_central zeros(1, medio - delta_orden)];
     
-    length(tomar_central)          
-
-    # De aca sale cualquier cosa :) ->
-    
-    # Aplico la ventana       
-    
-    ret = tomar_central;
-    
-    ret = ret(floor(f_ruido/2) : length(ret) - ceil(f_ruido/2));
-    
-    plot(tomar_central,'b',abs(fft(tomar_central)),'r', ret, 'g'); pause    
+    ret = tomar_central;      
     
     ret = fft(ret);
 
