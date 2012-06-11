@@ -21,17 +21,7 @@ function [ret] = FIR(orden, ventana)
     
     # Tomo la N+1 muestras centrales   
     
-    antitransformada = antitransformada .* ventana';
-    
-    medio = floor(length(antitransformada) / 2);
-    
-    delta_orden = floor(orden/2);
-    rango_central = medio - delta_orden : medio + delta_orden;
-
-    tomar_central = antitransformada(rango_central);    
-    tomar_central = [ zeros(1, medio - delta_orden - 1) tomar_central zeros(1, medio - delta_orden)];
-    
-    ret = tomar_central;      
+    ret = antitransformada .* ventana';
     
     ret = fft(ret);
 
