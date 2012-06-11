@@ -21,6 +21,8 @@ function [ret] = FIR(orden, ventana)
     
     # Tomo la N+1 muestras centrales   
     
+    antitransformada = antitransformada .* ventana';
+    
     medio = floor(length(antitransformada) / 2);
     
     delta_orden = floor(orden/2);
@@ -34,8 +36,8 @@ function [ret] = FIR(orden, ventana)
     # De aca sale cualquier cosa :) ->
     
     # Aplico la ventana       
-    plot(abs(fft(ventana)),'r');         pause;
-    ret = conv(tomar_central, ventana);
+    
+    ret = tomar_central;
     
     ret = ret(floor(f_ruido/2) : length(ret) - ceil(f_ruido/2));
     
