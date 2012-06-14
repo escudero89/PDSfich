@@ -4,28 +4,17 @@ clear all;
 
 # Calcula la cantidad de veces que la grafica corta al eje x
 function [corta] = count_cortes(S)
-
+    
     corta = 0;
     
-    signo = sign(S);
-    banda = signo(1);
-    
     for l = 2 : length(S)
-        
-        if (signo(l))
-            if (banda != 0 && (banda == signo(l)*-1))
-                corta += 1;
-                banda = signo(l);
-            else                 
-                banda = signo(l);
-            endif
-        endif
-    
+        # Da cero si son iguales, uno si son distintas
+        corta += 0.5 * abs(sign(S(l)) - sign(S(l-1)));
     endfor
-   
-    return;
 
+    return;
 endfunction
+
 
 # Le pasas una senal y su frec de muestre, y devuelve el segundo pico mas alto (pitch)
 # y la autocorrelacion
@@ -115,7 +104,7 @@ function [pitch_a, pitch_c, booleano] = analizar_pitchs(voice, fm, booleano = []
     v_hamming = a0 - a1 * cos((2 * pi * n) / (N - 1));
 
     # Estimacion de pitch 
-
+    cortados = []; pegado = [];
     for M = 1 : N / h_size
 
         # Corto en segmentos la senal
@@ -125,14 +114,15 @@ function [pitch_a, pitch_c, booleano] = analizar_pitchs(voice, fm, booleano = []
         # Me fijo cuantas veces corta el eje x #
         
         corta(M) = count_cortes(muestras(M,:));
-        
+        cortados = [cortados corta(M)];
+        pegado = [pegado max(xcorr(muestras(M, :)))];
         # Si tengo el booleano, ni me caliento
 
         if (no_tengo_booleano)
 
             # Booleano que separa las sordas de las sonoras (1: sonoro, 0: sordo)
             
-            max_frec_admitida = 90;
+            max_frec_admitida = 80;
             min_ener_admitida = 0.1;        
             
             if ( corta(M) > max_frec_admitida || max(xcorr(muestras(M, :))) < min_ener_admitida)        
@@ -169,7 +159,7 @@ function [pitch_a, pitch_c, booleano] = analizar_pitchs(voice, fm, booleano = []
         hold on; 
         stem3(x, ones(1, N), pitch_a, 'r');
         hold off;
-    endif
+    endif            
     
     return;
     
